@@ -1,8 +1,8 @@
 # Home Lab TV Dashboard
 
 A Samsung Smart TV (Tizen) app that shows my home lab on the living-room TV: Raspberry Pi and NAS
-health, Pi-hole stats, websites and services, network reachability, Vikunja tasks, the hall camera
-and the weather. It is the TV companion to [Network Dashboard](https://github.com/Lundqwist/NetworkDashboard).
+health, Pi-hole stats, websites and services, network reachability, the hall camera, the weather
+and CNN headlines. It is the TV companion to [Network Dashboard](https://github.com/Lundqwist/NetworkDashboard).
 
 ## How it works
 
@@ -13,8 +13,11 @@ project's README). The TV polls `/api/state` every 5 seconds and shows the camer
 feed's MJPEG proxy.
 
 ```
-TV app ──GET /api/state──▶ Network Dashboard feed (Pi, Docker) ──▶ agents, Pi-hole, Vikunja, go2rtc, …
+TV app ──GET /api/state──▶ Network Dashboard feed (Pi, Docker) ──▶ agents, Pi-hole, go2rtc, CNN Lite, …
 ```
+
+The News panel rotates the lead headline through CNN's top 10 every 12 seconds; OK shows 16
+headlines. The feed reads them from https://lite.cnn.com every 10 minutes (`news` panel type).
 
 Set the feed's address in `js/config.js`.
 
@@ -23,11 +26,14 @@ Set the feed's address in `js/config.js`.
 | Button | Action |
 | --- | --- |
 | ◀ ▲ ▼ ▶ | Choose a panel |
-| OK | Enlarge the panel (camera full screen, all tasks, longer forecast) |
+| OK | Enlarge the panel (camera full screen, more headlines, longer forecast) |
 | Back | Close the enlarged panel, or exit the app |
 | Red | Refresh now |
 
 The TV's screen saver is turned off while the app is open.
+
+To open the dashboard whenever the TV is switched on, turn on **Autorun Last App** in the TV's
+settings (General → Smart Features) and leave the dashboard open when you switch the TV off.
 
 ## Compatibility
 

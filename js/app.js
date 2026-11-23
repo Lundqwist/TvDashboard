@@ -66,7 +66,7 @@
   /* ----------------------------- renderers ----------------------------- */
 
   var titles = {
-    pi: 'Raspberry Pi 5', nas: 'NAS', pihole: 'Pi-hole', tasks: 'Tasks', camera: 'Hall camera',
+    pi: 'Raspberry Pi 5', nas: 'NAS', pihole: 'Pi-hole', news: 'News', camera: 'Hall camera',
     website: 'Website & services', network: 'Network', weather: 'Weather'
   };
 
@@ -113,22 +113,42 @@
       '<ul class="toplist">' + top + '</ul>';
   }
 
-  function tasks(d) {
+  var NEWS_ROTATE = 10;   // the lead headline cycles through the top 10
+  var newsIndex = 0;
+
+  function section(s) { return esc(String(s || '').replace(/-/g, ' ')); }
+  function dayLabel(date) {
+    if (!date) return '';
     var today = localDate(new Date());
-    var list = (d.tasks || []).filter(function (t) { return !t.done; });
-    list.sort(function (a, b) {
-      if (!a.due !== !b.due) return a.due ? -1 : 1;
-      return (a.due || '').localeCompare(b.due || '');
-    });
-    var limit = zoomed === 'tasks' ? 30 : 6;
-    var items = list.slice(0, limit).map(function (t) {
-      var cls = t.due && t.due < today ? 'overdue' : t.due === today ? 'today' : '';
-      var due = t.due ? (t.due === today ? 'Today' : t.due < today ? 'Late ' + t.due.slice(5) : t.due.slice(5)) : '';
-      return '<li class="' + cls + '"><span class="task-text">' + (t.priority ? '★ ' : '') + esc(t.text) +
-        '</span><span class="task-due">' + due + (t.repeats ? ' ↻' : '') + '</span></li>';
-    }).join('');
-    var more = list.length > limit ? '<div class="meta"><span>+ ' + (list.length - limit) + ' more (OK to see all)</span></div>' : '';
-    return '<ul class="tasks">' + (items || '<li class="empty">Nothing to do</li>') + '</ul>' + more;
+    var y = new Date(Date.now() - 864e5);
+    return date === today ? 'Today' : date === localDate(y) ? 'Yesterday' : date.slice(5);
+  }
+
+  function news(d) {
+    var items = d.items || [];
+    if (!items.length) return '<div class="loading">No headlines</div>';
+    if (zoomed === 'news') {
+      return '<ul class="news-list">' + items.slice(0, 16).map(function (n) {
+        return '<li><span class="sec">' + section(n.section) + '</span>' + esc(n.title) + '</li>';
+      }).join('') + '</ul>';
+    }
+    var count = Math.min(NEWS_ROTATE, items.length);
+    var lead = items[newsIndex % count];
+    var rest = items.filter(function (n) { return n !== lead; }).slice(0, 4);
+    var dots = '';
+    for (var i = 0; i < count; i++) dots += '<i class="' + (i === newsIndex % count ? 'on' : '') + '"></i>';
+    return '<div class="news-lead"><div class="kicker">' + section(lead.section) + '<span>' + dayLabel(lead.date) + '</span></div>' +
+      '<div class="headline">' + esc(lead.title) + '</div><div class="dots">' + dots + '</div></div>' +
+      '<ul class="news-list">' + rest.map(function (n) {
+        return '<li><span class="sec">' + section(n.section) + '</span>' + esc(n.title) + '</li>';
+      }).join('') + '</ul>';
+  }
+
+  function rotateNews() {
+    newsIndex++;
+    var s = lastState && lastState.panels.news;
+    if (!s || s.status !== 'ok' || !s.data || zoomed === 'news') return;
+    byId.news.querySelector('.body').innerHTML = news(s.data);
   }
 
   function camera(d, el) {
@@ -177,7 +197,7 @@
       }).join('') + '</div>';
   }
 
-  var renderers = { pi: host, nas: host, pihole: pihole, tasks: tasks, camera: camera, website: sites, network: network, weather: weather };
+  var renderers = { pi: host, nas: host, pihole: pihole, news: news, camera: camera, website: sites, network: network, weather: weather };
 
   /* ------------------------------- drawing ------------------------------- */
 
@@ -204,7 +224,8 @@
       var bad = panelProblem(id, s);
       if (bad) problems.push(titles[id]);
       var h2 = el.querySelector('h2');
-      var sub = id === 'pi' || id === 'nas' ? (s && s.data ? esc(s.data.model || s.data.hostname || '') : '') : '';
+      var sub = id === 'pi' || id === 'nas' ? (s && s.data ? esc(s.data.model || s.data.hostname || '') : '') :
+        id === 'news' ? '<span class="cnn-badge">CNN</span>' : '';
       h2.outerHTML = head(titles[id], s && s.status === 'ok' ? (bad ? 'warn' : 'ok') : 'bad', sub);
       var body = el.querySelector('.body');
       if (!s || s.status !== 'ok' || !s.data) {
@@ -320,5 +341,6 @@
   setFocus(0);
   tick();
   setInterval(tick, 1000);
+  setInterval(rotateNews, 12000);
   poll();
 })();

@@ -47,7 +47,7 @@ main {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  grid-template-areas: "pi pihole tasks camera" "nas website network weather";
+  grid-template-areas: "pi pihole news camera" "nas website network weather";
   grid-gap: 22px;
   min-height: 0;
 }
@@ -123,17 +123,31 @@ body.zoom main .panel:not(.zoomed) { visibility: hidden; }
 .toplist li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 12px; }
 .toplist li b { color: var(--text); font-weight: 500; }
 
-/* Tasks */
-.tasks { list-style: none; }
-.tasks li { display: flex; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 22px; }
-.tasks .task-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 12px; }
-.tasks .task-due { color: var(--dim); font-size: 19px; white-space: nowrap; }
-.tasks li.today .task-due { color: var(--accent); font-weight: 600; }
-.tasks li.overdue .task-due { color: var(--bad); font-weight: 600; }
-.tasks li.empty { color: var(--dim); justify-content: center; }
-.panel.zoomed .tasks li { font-size: 28px; padding: 10px 0; }
-.panel.zoomed .tasks { column-count: 2; column-gap: 60px; }
-.panel.zoomed .tasks li { break-inside: avoid; }
+/* News */
+.cnn-badge {
+  display: inline-block; background: #cc0000; color: #fff; font-weight: 800; font-size: 18px; letter-spacing: 1px;
+  padding: 2px 8px; border-radius: 4px; margin-left: 12px;
+}
+.news-lead { padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; min-height: 128px; }
+.news-lead .kicker { color: #ff5c5c; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.news-lead .kicker span { color: var(--dim); font-weight: 400; margin-left: 8px; }
+.news-lead .headline {
+  font-size: 27px; font-weight: 600; line-height: 1.22; margin-top: 6px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.news-lead .dots { margin-top: 8px; }
+.news-lead .dots i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--line); margin-right: 6px; }
+.news-lead .dots i.on { background: #ff5c5c; }
+.news-list { list-style: none; }
+.news-list li {
+  padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 20px; line-height: 1.25;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.news-list li:last-child { border-bottom: 0; }
+.news-list .sec { color: #ff5c5c; font-size: 15px; text-transform: uppercase; letter-spacing: .5px; margin-right: 10px; font-weight: 700; }
+.panel.zoomed .news-list { column-count: 2; column-gap: 60px; }
+.panel.zoomed .news-list li { font-size: 26px; padding: 10px 0; white-space: normal; break-inside: avoid; }
+.panel.zoomed .news-list .sec { font-size: 19px; }
 
 /* Camera */
 .cam { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; background: #000; }
