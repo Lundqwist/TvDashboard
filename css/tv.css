@@ -1,0 +1,171 @@
+/* Sized for a 1920x1080 TV seen from the sofa: big text, high contrast, no hover states. */
+:root {
+  --bg: #0b1324;
+  --panel: #131e36;
+  --panel-2: #1a2848;
+  --line: #26365c;
+  --text: #e9eef8;
+  --dim: #9aa8c4;
+  --accent: #e3b341;
+  --ok: #3fcf8e;
+  --warn: #f0b429;
+  --bad: #ff5c6c;
+  --blue: #6fb7ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; }
+body {
+  background: radial-gradient(circle at 20% 0%, #15254a 0%, var(--bg) 55%);
+  color: var(--text);
+  font-family: "SamsungOne", "Samsung Sans", Roboto, "Segoe UI", Arial, sans-serif;
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 40px 18px;
+}
+
+/* ------------------------------ header ------------------------------ */
+header { display: flex; align-items: center; height: 96px; margin-bottom: 20px; }
+.brand { display: flex; align-items: center; flex: 1; }
+.brand img { width: 64px; height: 64px; border-radius: 14px; margin-right: 20px; }
+h1 { font-size: 44px; font-weight: 600; letter-spacing: .5px; }
+.summary {
+  font-size: 30px; font-weight: 600; padding: 12px 30px; border-radius: 40px;
+  background: var(--panel); border: 2px solid var(--line); margin-right: 40px;
+  max-width: 900px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.summary.ok { color: var(--ok); border-color: rgba(63, 207, 142, .45); }
+.summary.warn { color: var(--warn); border-color: rgba(240, 180, 41, .5); }
+.summary.bad { color: var(--bad); border-color: rgba(255, 92, 108, .5); }
+.when { text-align: right; }
+.clock { font-size: 64px; font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
+.date { font-size: 24px; color: var(--dim); margin-top: 4px; }
+
+/* ------------------------------- grid ------------------------------- */
+main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas: "pi pihole tasks camera" "nas website network weather";
+  grid-gap: 22px;
+  min-height: 0;
+}
+.panel {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 3px solid var(--line);
+  border-radius: 22px;
+  padding: 20px 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.panel.focused {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(227, 179, 65, .25), 0 10px 40px rgba(0, 0, 0, .45);
+  transform: scale(1.015);
+}
+.panel h2 {
+  font-size: 28px; font-weight: 600; display: flex; align-items: center; margin-bottom: 14px; white-space: nowrap;
+}
+.panel h2 small { font-size: 19px; color: var(--dim); font-weight: 400; margin-left: 12px; overflow: hidden; text-overflow: ellipsis; }
+.body { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.loading, .error { color: var(--dim); font-size: 24px; margin: auto; text-align: center; }
+.error { color: var(--bad); }
+
+/* zoom: OK on the remote enlarges the focused panel */
+body.zoom main .panel:not(.zoomed) { visibility: hidden; }
+.panel.zoomed {
+  position: fixed; left: 40px; right: 40px; top: 144px; bottom: 60px; z-index: 5; transform: none;
+  font-size: 30px;
+}
+.panel.zoomed h2 { font-size: 38px; }
+
+/* ------------------------------ shared ------------------------------ */
+.dot { width: 16px; height: 16px; border-radius: 50%; background: var(--dim); margin-right: 14px; flex: none; }
+.dot.ok { background: var(--ok); box-shadow: 0 0 10px rgba(63, 207, 142, .6); }
+.dot.warn { background: var(--warn); }
+.dot.bad { background: var(--bad); box-shadow: 0 0 10px rgba(255, 92, 108, .7); }
+.dot.pending { background: var(--line); }
+.ok { color: var(--ok); }
+.warn { color: var(--warn); }
+.bad { color: var(--bad); }
+.bad-text { color: var(--bad); font-weight: 600; }
+
+.host-top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 6px; }
+.big { font-size: 64px; font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
+.big span { font-size: 22px; color: var(--dim); margin-left: 6px; font-weight: 400; }
+.stack { text-align: right; font-size: 21px; color: var(--dim); line-height: 1.45; }
+.stack b { color: var(--text); font-weight: 600; }
+
+.spark { width: 100%; height: 52px; margin: 6px 0 10px; }
+.spark polyline { fill: none; stroke: var(--blue); stroke-width: 2.5; }
+
+.bar-row { display: flex; align-items: center; margin: 7px 0; font-size: 21px; }
+.bar-label { width: 120px; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar { flex: 1; height: 14px; background: #0d1629; border-radius: 7px; overflow: hidden; margin: 0 12px; }
+.bar i { display: block; height: 100%; border-radius: 7px; }
+.bar i.ok { background: var(--ok); }
+.bar i.warn { background: var(--warn); }
+.bar i.bad { background: var(--bad); }
+.bar-value { width: 120px; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.meta { display: flex; justify-content: space-between; color: var(--dim); font-size: 20px; margin-top: 8px; }
+
+/* Pi-hole */
+.cols { display: flex; align-items: flex-end; height: 110px; margin: 12px 0; }
+.cols .col { flex: 1; margin: 0 2px; background: rgba(111, 183, 255, .35); border-radius: 3px 3px 0 0; display: flex; align-items: flex-end; min-height: 2px; }
+.cols .col i { display: block; width: 100%; background: var(--bad); opacity: .8; border-radius: 3px 3px 0 0; }
+.toplist { list-style: none; font-size: 20px; }
+.toplist li { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px solid var(--line); color: var(--dim); }
+.toplist li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 12px; }
+.toplist li b { color: var(--text); font-weight: 500; }
+
+/* Tasks */
+.tasks { list-style: none; }
+.tasks li { display: flex; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 22px; }
+.tasks .task-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 12px; }
+.tasks .task-due { color: var(--dim); font-size: 19px; white-space: nowrap; }
+.tasks li.today .task-due { color: var(--accent); font-weight: 600; }
+.tasks li.overdue .task-due { color: var(--bad); font-weight: 600; }
+.tasks li.empty { color: var(--dim); justify-content: center; }
+.panel.zoomed .tasks li { font-size: 28px; padding: 10px 0; }
+.panel.zoomed .tasks { column-count: 2; column-gap: 60px; }
+.panel.zoomed .tasks li { break-inside: avoid; }
+
+/* Camera */
+.cam { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; background: #000; }
+
+/* Rows (websites, network) */
+.rows { list-style: none; }
+.rows li { display: flex; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--line); font-size: 21px; }
+.rows li:last-child { border-bottom: 0; }
+.rows .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows .val { color: var(--dim); font-variant-numeric: tabular-nums; }
+.panel.zoomed .rows li { font-size: 32px; padding: 14px 0; }
+
+/* Weather */
+.wx-icon { width: 88px; height: 88px; flex: none; }
+.wx-now { display: flex; align-items: center; }
+.wx-now .wx-icon { width: 96px; height: 96px; margin-right: 16px; }
+.wx-desc { color: var(--dim); font-size: 19px; margin-top: 6px; }
+.wx-hours, .wx-days { display: flex; justify-content: space-between; margin-top: 10px; text-align: center; }
+.wx-hours > div, .wx-days > div { flex: 1; display: flex; flex-direction: column; align-items: center; font-size: 19px; line-height: 1.15; }
+.wx-hours span, .wx-days span { color: var(--dim); }
+.wx-hours .wx-icon, .wx-days .wx-icon { width: 38px; height: 38px; margin: 1px 0; }
+.wx-hours small, .wx-days small { color: var(--blue); font-size: 16px; }
+.wx-days small { color: var(--dim); }
+.wx-days { border-top: 1px solid var(--line); padding-top: 8px; }
+.wx-days > div { flex-direction: row; justify-content: center; }
+.wx-days > div > * { margin: 0 4px; }
+.panel.zoomed .wx-hours .wx-icon, .panel.zoomed .wx-days .wx-icon { width: 80px; height: 80px; }
+.panel.zoomed .wx-hours > div, .panel.zoomed .wx-days > div { font-size: 28px; }
+
+/* ------------------------------ footer ------------------------------ */
+footer { display: flex; align-items: center; height: 40px; margin-top: 14px; color: var(--dim); font-size: 20px; }
+footer span { margin-right: 40px; }
+footer b { color: var(--text); margin-right: 6px; }
+footer b.red { color: #e53935; }
+footer .updated { margin-left: auto; margin-right: 0; }

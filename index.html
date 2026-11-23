@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080, user-scalable=no">
+  <title>Home Lab</title>
+  <link rel="stylesheet" href="css/tv.css">
+  <!-- Samsung's TV APIs (screen saver control). Only exists on the TV; harmless elsewhere. -->
+  <script src="$WEBAPIS/webapis/webapis.js"></script>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="icon.png" alt="">
+      <h1 id="title">Home Network</h1>
+    </div>
+    <div id="summary" class="summary">Connecting…</div>
+    <div class="when">
+      <div id="clock" class="clock">--:--</div>
+      <div id="date" class="date"></div>
+    </div>
+  </header>
+
+  <main id="grid">
+    <section class="panel" data-id="pi" style="grid-area:pi"></section>
+    <section class="panel" data-id="pihole" style="grid-area:pihole"></section>
+    <section class="panel" data-id="tasks" style="grid-area:tasks"></section>
+    <section class="panel" data-id="camera" style="grid-area:camera"></section>
+    <section class="panel" data-id="nas" style="grid-area:nas"></section>
+    <section class="panel" data-id="website" style="grid-area:website"></section>
+    <section class="panel" data-id="network" style="grid-area:network"></section>
+    <section class="panel" data-id="weather" style="grid-area:weather"></section>
+  </main>
+
+  <footer>
+    <span><b>◀ ▲ ▼ ▶</b> choose</span>
+    <span><b>OK</b> enlarge</span>
+    <span><b>Back</b> close / exit</span>
+    <span><b class="red">●</b> refresh</span>
+    <span id="updated" class="updated"></span>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

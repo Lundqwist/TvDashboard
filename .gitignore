@@ -1,0 +1,6 @@
+*.wgt
+.manifest.tmp
+.buildResult/
+.sign/
+.vscode/
+Thumbs.db
